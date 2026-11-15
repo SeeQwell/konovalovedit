@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sergei, Video Editor</title>
+<meta name="description" content="Sergei is a video editor working with vertical and horizontal content. Open to any project and experiment.">
+<meta name="theme-color" content="#0a0718">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Serif:ital@1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one narrow column on a deep violet night sky; gradient violet -> blue carries every accent. Single dark theme by choice. */
+:root {
+  color-scheme: dark;
+  --bg: #0a0718;
+  --surface: #130f2b;
+  --line: rgba(170, 160, 255, .16);
+  --text: #efecff;
+  --muted: #a9a3cf;
+  --violet: #8b5cf6;
+  --blue: #4f7dff;
+  --sky: #6fc3ff;
+  --grad: linear-gradient(100deg, #b18cff 0%, #7f6bff 40%, #4f7dff 75%, #6fc3ff 100%);
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-accent: "Instrument Serif", Georgia, serif;
+  --font-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --wrap: 1120px;
+  --radius: 20px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(900px 600px at 85% -10%, rgba(99, 72, 255, .38), transparent 65%),
+    radial-gradient(700px 500px at -10% 20%, rgba(52, 96, 255, .26), transparent 65%),
+    radial-gradient(900px 700px at 50% 110%, rgba(139, 92, 246, .22), transparent 65%);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; border-radius: 8px; }
+.wrap { width: min(var(--wrap), 100% - 40px); margin-inline: auto; }
+section { padding-block: 72px; }
+h1, h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: -.02em; line-height: 1.05; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2.5rem, 6.4vw, 4.6rem); }
+h2 { font-size: clamp(2rem, 4.4vw, 3.1rem); }
+em {
+  font-family: var(--font-accent); font-style: italic; font-weight: 400; letter-spacing: 0;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+  padding-right: .08em;
+}
+.eyebrow { font-size: .78rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--sky); margin: 0 0 14px; }
+.muted { color: var(--muted); }
+
+/* Nav */
+.nav { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); background: rgba(10, 7, 24, .68); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
+.logo { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; letter-spacing: -.02em; }
+.logo span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.nav-links { display: flex; align-items: center; gap: 22px; font-size: .95rem; font-weight: 600; }
+.nav-links a.text { color: var(--muted); transition: color .2s; }
+.nav-links a.text:hover { color: var(--text); }
+.socials { display: flex; gap: 8px; }
+.icon-btn { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.04); transition: border-color .2s, background .2s, transform .2s; }
+.icon-btn:hover { border-color: rgba(170,160,255,.5); background: rgba(139,92,246,.18); transform: translateY(-1px); }
+.icon-btn svg { width: 18px; height: 18px; }
+
+/* Hero */
+.hero { padding-top: 64px; }
+.hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+.badge { display: inline-flex; align-items: center; gap: 10px; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.04); font-size: .85rem; font-weight: 600; margin-bottom: 26px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #5df2b0; box-shadow: 0 0 0 4px rgba(93,242,176,.18); }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 46ch; margin: 22px 0 0; }
+.ticks { list-style: none; padding: 0; margin: 24px 0 0; display: flex; flex-wrap: wrap; gap: 10px 22px; font-weight: 600; font-size: .98rem; }
+.ticks li { display: flex; align-items: center; gap: 9px; }
+.ticks svg { width: 18px; height: 18px; color: var(--sky); flex: none; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 14px; font-weight: 700; font-size: 1rem; transition: transform .2s, box-shadow .2s, background .2s, border-color .2s; }
+.btn svg { width: 19px; height: 19px; }
+.btn-primary { background: linear-gradient(100deg, #8b5cf6, #4f7dff); color: #fff; box-shadow: 0 10px 34px -10px rgba(110, 90, 255, .8); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -10px rgba(110, 90, 255, .95); }
+.btn-ghost { border: 1px solid var(--line); background: rgba(255,255,255,.04); }
+.btn-ghost:hover { border-color: rgba(170,160,255,.5); background: rgba(139,92,246,.14); transform: translateY(-2px); }
+
+/* Media slots (placeholders until real files are added) */
+.slot { position: relative; overflow: hidden; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); isolation: isolate; }
+.slot video, .slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
+.slot::before { content: ""; position: absolute; inset: -40%; z-index: -1; background:
+    radial-gradient(40% 40% at 30% 30%, rgba(139,92,246,.75), transparent 70%),
+    radial-gradient(45% 45% at 72% 62%, rgba(79,125,255,.7), transparent 70%),
+    radial-gradient(35% 35% at 55% 20%, rgba(111,195,255,.35), transparent 70%);
+  filter: blur(30px); animation: drift 14s ease-in-out infinite alternate; }
+.slot:nth-child(2n)::before { animation-duration: 18s; animation-direction: alternate-reverse; }
+@keyframes drift { from { transform: translate(-6%, -4%) rotate(0deg) scale(1); } to { transform: translate(6%, 5%) rotate(25deg) scale(1.15); } }
+.slot-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 16px; }
+.play { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 50%; background: rgba(10,7,24,.45); border: 1px solid rgba(255,255,255,.3); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.play svg { width: 20px; height: 20px; margin-left: 3px; }
+.slot-name { font-weight: 700; font-size: .98rem; }
+.slot-meta { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(239,236,255,.75); }
+.slot.filled::before { display: none; }
+.slot.filled { background: #000; }
+.r-16x9 { aspect-ratio: 16 / 9; }
+.r-9x16 { aspect-ratio: 9 / 16; }
+.hero-media { box-shadow: 0 40px 90px -40px rgba(98, 76, 255, .9); }
+
+/* Work */
+.section-head { margin-bottom: 36px; }
+.sub { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 16px; font-weight: 700; }
+.sub small { font-weight: 600; color: var(--muted); font-size: .85rem; letter-spacing: .08em; }
+.reels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 44px; }
+.wide { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+/* About */
+.about-grid { display: grid; grid-template-columns: 300px 1fr; gap: 52px; align-items: center; }
+.portrait { aspect-ratio: 4 / 5; }
+.about p { max-width: 60ch; margin: 18px 0 0; color: var(--muted); }
+.about p strong { color: var(--text); font-weight: 600; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 32px; }
+.fact { padding: 18px; border-radius: 16px; border: 1px solid var(--line); background: rgba(255,255,255,.035); }
+.fact b { display: block; font-family: var(--font-display); font-size: 1.9rem; line-height: 1.1; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.fact span { display: block; margin-top: 6px; font-size: .88rem; color: var(--muted); }
+
+/* CTA */
+.cta { text-align: center; padding: 64px 24px; border-radius: 28px; border: 1px solid var(--line);
+  background: radial-gradient(600px 300px at 50% 0%, rgba(139,92,246,.4), transparent 70%), linear-gradient(160deg, rgba(79,125,255,.2), rgba(19,15,43,.6)); }
+.cta p { color: var(--muted); margin: 16px auto 0; max-width: 44ch; }
+.cta .actions { justify-content: center; }
+
+/* Footer */
+footer { border-top: 1px solid var(--line); margin-top: 32px; }
+footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding-block: 24px; font-size: .9rem; color: var(--muted); }
+footer .right { display: flex; align-items: center; gap: 16px; }
+
+@media (max-width: 860px) {
+  section { padding-block: 52px; }
+  .hero { padding-top: 40px; }
+  .hero-grid, .about-grid { grid-template-columns: 1fr; gap: 36px; }
+  .portrait { max-width: 260px; }
+  .wide { grid-template-columns: 1fr; }
+  .reels { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 62%; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; gap: 14px; }
+  .reels .slot { scroll-snap-align: start; }
+  .facts { grid-template-columns: 1fr; }
+  .nav-links a.text { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .slot::before { animation: none; }
+  .btn, .icon-btn { transition: none; }
+}
+</style>
+</head>
+<body id="top">
+
+<!-- ================= HOW TO ADD VIDEOS =================
+  Drop files into assets/video/ with exactly these names:
+    hero.mp4     showreel in the header (plays silently on loop)
+    reel-1.mp4, reel-2.mp4, reel-3.mp4     vertical 9:16
+    video-1.mp4, video-2.mp4               horizontal 16:9
+  Each slot shows its placeholder until its file exists; no code changes needed.
+  Optional cover image: same name with .jpg (reel-1.jpg) next to the video.
+======================================================= -->
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top">konovalovedit<span>.</span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a class="text" href="#work">Work</a>
+      <a class="text" href="#about">About</a>
+      <a class="text" href="#contact">Get in touch</a>
+      <div class="socials">
+        <a class="icon-btn" href="https://t.me/SeeQwell" aria-label="Telegram">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 3.3 2.9 10.5c-1.2.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8s.7-.2 1-.5l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.8c.3-1.3-.5-1.9-1.3-1.8ZM8.3 13.1l9.4-5.9c.4-.3.8-.1.5.2l-7.7 7-.3 3.4-1.9-4.7Z"/></svg>
+        </a>
+        <a class="icon-btn" href="https://www.instagram.com/konovalovedit/" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="badge"><span class="dot"></span>Available for new projects</div>
+        <h1>Edits that feel <em>current</em>, cut for <em>every screen</em>.</h1>
+        <p class="lead">Video editing for creators and brands. Vertical, horizontal, and anything you want to try next.</p>
+        <ul class="ticks">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Fluent in what's trending</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Open to any idea or experiment</li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://t.me/SeeQwell">
+            Message me on Telegram
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 3.3 2.9 10.5c-1.2.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8s.7-.2 1-.5l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.8c.3-1.3-.5-1.9-1.3-1.8ZM8.3 13.1l9.4-5.9c.4-.3.8-.1.5.2l-7.7 7-.3 3.4-1.9-4.7Z"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#work">See the work</a>
+        </div>
+      </div>
+
+      <!-- HERO MEDIA SLOT -->
+      <div class="slot r-16x9 hero-media" data-video="assets/video/hero.mp4" data-loop>
+        <div class="slot-label">
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+          <span class="slot-name">Showreel</span>
+          <span class="slot-meta">Hero video · coming soon</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Portfolio</p>
+        <h2>A few pieces of <em>my work</em></h2>
+      </div>
+
+      <p class="sub">Vertical <small>9:16 · REELS</small></p>
+      <div class="reels">
+        <!-- REEL SLOT 1 -->
+        <div class="slot r-9x16" data-video="assets/video/reel-1.mp4"><div class="slot-label">
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+          <span class="slot-name">Reel 01</span><span class="slot-meta">Coming soon</span>
+        </div></div>
+        <!-- REEL SLOT 2 -->
+        <div class="slot r-9x16" data-video="assets/video/reel-2.mp4"><div class="slot-label">
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+          <span class="slot-name">Reel 02</span><span class="slot-meta">Coming soon</span>
+        </div></div>
+        <!-- REEL SLOT 3 -->
+        <div class="slot r-9x16" data-video="assets/video/reel-3.mp4"><div class="slot-label">
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+          <span class="slot-name">Reel 03</span><span class="slot-meta">Coming soon</span>
+        </div></div>
+      </div>
+
+      <p class="sub">Horizontal <small>16:9 · VIDEO</small></p>
+      <div class="wide">
+        <!-- HORIZONTAL SLOT 1 -->
+        <div class="slot r-16x9" data-video="assets/video/video-1.mp4"><div class="slot-label">
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+          <span class="slot-name">Video 01</span><span class="slot-meta">Coming soon</span>
+        </div></div>
+        <!-- HORIZONTAL SLOT 2 -->
+        <div class="slot r-16x9" data-video="assets/video/video-2.mp4"><div class="slot-label">
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+          <span class="slot-name">Video 02</span><span class="slot-meta">Coming soon</span>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <div class="wrap about-grid">
+      <div class="slot portrait">
+        <img src="assets/profile.jpg" alt="Sergei, video editor" width="900" height="1200">
+      </div>
+      <div>
+        <h2>Hi, I'm <em>Sergei</em></h2>
+        <p>I'm a video editor for people who'd rather <strong>try something new</strong> than repeat what already worked. I'm open to any project and any experiment: a first reel for a new page, a series, a brand piece, or an idea nobody has tested yet.</p>
+        <p>I keep a close eye on what's trending, from formats and pacing to sounds and transitions, and I edit in both <strong>vertical</strong> and <strong>horizontal</strong>, so one idea can live on every platform.</p>
+        <div class="facts">
+          <div class="fact"><b>9:16</b><span>Reels, Shorts, TikTok</span></div>
+          <div class="fact"><b>16:9</b><span>YouTube and long-form</span></div>
+          <div class="fact"><b>Any</b><span>Project, niche or experiment</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="cta">
+        <h2>Got an <em>idea</em>? Let's make it.</h2>
+        <p>Send me your footage or just the idea, even if it's still rough. I reply fastest on Telegram.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://t.me/SeeQwell">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 3.3 2.9 10.5c-1.2.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8s.7-.2 1-.5l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.8c.3-1.3-.5-1.9-1.3-1.8ZM8.3 13.1l9.4-5.9c.4-.3.8-.1.5.2l-7.7 7-.3 3.4-1.9-4.7Z"/></svg>
+            Telegram
+          </a>
+          <a class="btn btn-ghost" href="https://www.instagram.com/konovalovedit/">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg>
+            Instagram
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Sergei · Video Editor</span>
+    <div class="right">
+      <a href="#contact">Get in touch</a>
+      <a href="https://t.me/SeeQwell">Telegram</a>
+      <a href="https://www.instagram.com/konovalovedit/">Instagram</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Fill each slot with its video once the file exists; otherwise the placeholder stays.
+document.querySelectorAll('.slot[data-video]').forEach(function (slot) {
+  var src = slot.getAttribute('data-video');
+  var loop = slot.hasAttribute('data-loop');
+  var v = document.createElement('video');
+  v.playsInline = true;
+  v.preload = 'metadata';
+  if (loop) { v.muted = true; v.loop = true; v.autoplay = true; }
+  else { v.controls = true; }
+  v.addEventListener('loadedmetadata', function () {
+    var label = slot.querySelector('.slot-label');
+    if (label) label.remove();
+    slot.classList.add('filled');
+    slot.appendChild(v);
+    if (!loop) {
+      var poster = new Image();
+      poster.onload = function () { v.poster = poster.src; };
+      poster.src = src.replace(/\.mp4$/, '.jpg');
+    }
+  }, { once: true });
+  v.src = src;
+});
+</script>
+
+</body>
+</html>
